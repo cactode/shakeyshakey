@@ -2,6 +2,6 @@
 
 constexpr PinName OUTPUT_PIN{PA_4};
 
-constexpr int SIN_POINTS{256};
+constexpr uint32_t SIN_POINTS{128};
 
-constexpr float APB1_FREQ{45e6};
+constexpr float APB1_FREQ{90e6};
