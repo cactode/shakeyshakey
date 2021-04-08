@@ -43,18 +43,12 @@ void MX_DAC_Init(void)
   /** DAC Initialization
   */
   hdac.Instance = DAC;
-  if (HAL_DAC_Init(&hdac) != HAL_OK)
-  {
-    // Error_Handler();
-  }
+  HAL_DAC_Init(&hdac);
   /** DAC channel OUT1 config
   */
   sConfig.DAC_Trigger = DAC_TRIGGER_T2_TRGO;
   sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
-  if (HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_1) != HAL_OK)
-  {
-    // Error_Handler();
-  }
+  HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_1);
   /* USER CODE BEGIN DAC_Init 2 */
 
   /* USER CODE END DAC_Init 2 */
@@ -94,10 +88,7 @@ void HAL_DAC_MspInit(DAC_HandleTypeDef* dacHandle)
     hdma_dac1.Init.Mode = DMA_CIRCULAR;
     hdma_dac1.Init.Priority = DMA_PRIORITY_HIGH;
     hdma_dac1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
-    if (HAL_DMA_Init(&hdma_dac1) != HAL_OK)
-    {
-    //   Error_Handler();
-    }
+    HAL_DMA_Init(&hdma_dac1);
 
     __HAL_LINKDMA(dacHandle,DMA_Handle1,hdma_dac1);
 
