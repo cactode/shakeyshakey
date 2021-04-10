@@ -11,26 +11,21 @@ void sinLUT_init() {
     HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, sinLUT, SIN_POINTS, DAC_ALIGN_12B_R);
 }
 
-// starts timer
 void TIM2_start_with_ARR(uint16_t period) {
-    // TIM2->CR1    |= TIM_CR1_UDIS;  // disable updates
-    DAC1->CR     |= DAC_CR_TEN1;
-    TIM2->ARR     = period;        // set new period
-    TIM2->CR1    |= TIM_CR1_CEN;   // enable timer
-    // TIM2->EGR    |= TIM_EGR_UG;    // force new update
+    DAC1->CR     |= DAC_CR_TEN1;                    // enable hardware DMA trigger mode
+    TIM2->ARR     = period;                         // set new period
+    TIM2->CR1    |= TIM_CR1_CEN;                    // enable timer
 }
 
-// stops timer, resets it
 void TIM2_stop() {
-    // TIM2->CR1    |= TIM_CR1_UDIS;  // disables updates
-    TIM2->ARR     = 0x0;           // blanks out period
-    TIM2->CR1    &= ~TIM_CR1_CEN;          // disable operation
-    DAC1->CR     &= ~DAC_CR_TEN1;          // disable hardware DMA trigger mode
+    TIM2->CR1    &= ~TIM_CR1_CEN;                   // disable operation
+    TIM2->ARR     = 0x0;                            // blanks out period
+    DAC1->CR     &= ~DAC_CR_TEN1;                   // disable hardware DMA trigger mode
     DAC1->DHR12R1 = static_cast<uint32_t>(4096/2);  // set signal to half voltage
-    // TIM2->EGR    |= TIM_EGR_UG;    // force new update
 }
 
-void set_frequency(float frequency) {
+// convenience function to make a specific frequency
+void TIM2_start_with_frequency(float frequency) {
     TIM2_start_with_ARR(
         static_cast<uint16_t>(
             APB1_FREQ / (frequency * SIN_POINTS)
