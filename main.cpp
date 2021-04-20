@@ -9,14 +9,13 @@
 #include "waveread.h"
 
 int main() {
-    DigitalOut led{LED1};
-    ADXL_init();
-    printf("\n\nInitialized ADXL!\nSnippets of inputBuffer:\n");
+    HW_init();
+    sinLUT_init();
+    TIM2_start_with_frequency(100);
+    printf("\nSuccessfully initialized DMA signal output!\n");
+    set_volume(63);
+    printf("Set volume!\n");
     while (true) {
-        led = !led;
-        // fill_ADXL_buffer();
-        led = !led;
-        print_ADXL_buffer();
         ThisThread::sleep_for(1000ms);
     }
 }

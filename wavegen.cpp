@@ -2,6 +2,8 @@
 
 uint32_t sinLUT[SIN_POINTS];
 
+I2C amplifier{PB_9, PB_8};
+
 void sinLUT_init() {
     for (int i = 0; i < SIN_POINTS; ++i) {
         float sin = sinf(2 * 3.1415926 * (static_cast<float>(i) / SIN_POINTS));
@@ -35,4 +37,9 @@ void TIM2_start_with_frequency(float frequency) {
 
 uint32_t * get_sinLUT() {
     return sinLUT;
+}
+
+void set_volume(uint8_t volume) {
+    char data = (volume < 64) ? volume : 63;
+    amplifier.write(MAX9744_I2CADDR, &data, 1);
 }
