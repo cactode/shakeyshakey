@@ -17,29 +17,8 @@ int main() {
     printf("Set volume!\n");
     while (true) {
         ThisThread::sleep_for(1000ms);
+        set_volume(1);
+        ThisThread::sleep_for(1000ms);
+        set_volume(44);
     }
 }
-
-// int main()
-// {   
-//     DigitalOut led{LED1};
-//     printf("\n\nInitializing hardware...\n");
-//     HW_init();
-//     printf("Initialized hardware successfully!\n");
-//     printf("Initializing sinLUT and DMA...\n");
-//     sinLUT_init();
-//     printf("Initalized sinLUT and DMA successfully!\n");
-//     printf("Snippet of sinLUT:\n");
-//     for (int i = 0; i < SIN_POINTS / 10; ++i) {
-//         printf("%d, " , get_sinLUT()[i]);
-//     }
-//     while (true) {
-//         ThisThread::sleep_for(1000ms);
-//         led = !led;
-//         printf("Starting DMA sin stream\n");
-//         TIM2_start_with_frequency(100);
-//         ThisThread::sleep_for(1000ms);
-//         printf("Stoppping DMA sin stream\n");
-//         TIM2_stop();
-//     }
-// }
