@@ -11,11 +11,13 @@ ADXL345 accelerometer{PA_7, PA_6, PA_5, PB_6};
 
 void TIM3_start_with_ARR(uint16_t period) {
     TIM3->ARR     = period;                         // set new period
+    TIM3->DIER   |= TIM_IT_UPDATE;                  // enable interrupts
     TIM3->CR1    |= TIM_CR1_CEN;                    // enable timer
 }
 
 void TIM3_stop() {
     TIM3->CR1    &= ~TIM_CR1_CEN;                   // disable operation
+    TIM3->DIER   &= ~TIM_IT_UPDATE;                 // disable interrupts
     TIM3->ARR     = 0x0;                            // blanks out period
 }
 
@@ -54,9 +56,9 @@ void ADXL_init() {
     accelerometer.setDataRate(ADXL345_3200HZ);
     //Measurement mode.
     accelerometer.setPowerControl(0x08);
-    fill_ADXL_buffer();
+    // fill_ADXL_buffer();
     // calculate offset, accumulate using float as start, implicit conversion to int16_t
-    offset = std::accumulate(begin(inputBuffer), end(inputBuffer), 0.0f) / ADXL_POINTS;
+    // offset = std::accumulate(begin(inputBuffer), end(inputBuffer), 0.0f) / ADXL_POINTS;
 
 
 }
@@ -72,11 +74,11 @@ void fill_ADXL_buffer() {
 }
 
 void print_ADXL_buffer() {
+    printf("Input buffer contents:\n");
     for (int i = 0; i < ADXL_POINTS; ++i) {
-        printf("Input buffer contents:\n");
         printf("%i, ", inputBuffer[i]);
-        printf("\n");
     }
+    printf("\n");
 }
 
 void perform_rfft() {

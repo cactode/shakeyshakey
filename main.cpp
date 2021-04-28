@@ -11,14 +11,14 @@
 int main() {
     HW_init();
     sinLUT_init();
+    set_volume(20);
+    printf("Set volume!\n");
     TIM2_start_with_frequency(100);
     printf("\nSuccessfully initialized DMA signal output!\n");
-    set_volume(63);
-    printf("Set volume!\n");
     while (true) {
-        ThisThread::sleep_for(1000ms);
-        set_volume(1);
-        ThisThread::sleep_for(1000ms);
-        set_volume(44);
+        printf("ADXL reading: %i\n", ADXL_reading());
+        fill_ADXL_buffer();
+        print_ADXL_buffer();
+        ThisThread::sleep_for(1000ms); 
     }
 }

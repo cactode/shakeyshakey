@@ -4,8 +4,9 @@ uint32_t sinLUT[SIN_POINTS];
 
 I2C amplifier{PB_9, PB_8};
 
+// may be turned into a log chirp later, who knows????
 void sinLUT_init() {
-    for (int i = 0; i < SIN_POINTS; ++i) {
+    for (uint16_t i = 0; i < SIN_POINTS; ++i) {
         float sin = sinf(2 * 3.1415926 * (static_cast<float>(i) / SIN_POINTS));
         sinLUT[i] = static_cast<uint32_t>( (sin / 2.1 + 0.5) * 4095); // scaled to be a 12-bit unsigned number
     }
