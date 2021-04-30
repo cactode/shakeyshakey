@@ -11,6 +11,9 @@
 int main() {
     HW_init();
     sinLUT_init();
+    printf("Initialized sinLUT\n");
+    ADXL_init();
+    printf("Initialized ADXL!\n");
     set_volume(20);
     printf("Set volume!\n");
     TIM2_start_with_frequency(100);

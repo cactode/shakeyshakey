@@ -3,4 +3,4 @@ A program that uses an accelerometer and a surface transducer to make an object 
 My worst idea yet.
 
 ## Progress
-Basic data collection with ADXL works, but a DMA solution would be way cooler.
+Need to resolve the  g r e a t  l i n k e r  m y s t e r y  and see why CMSIS doesn't like armclang.

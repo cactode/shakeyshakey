@@ -3,7 +3,6 @@
 
 static uint32_t inputIndex{0};
 static int16_t inputBuffer[ADXL_POINTS];
-static float32_t rfftBuffer[ADXL_POINTS];
 static int readings[]{0,0,0};
 static int16_t offset{0};
 
@@ -35,15 +34,13 @@ int16_t ADXL_reading() {
     return readings[1] - offset;
 }
 
-// magical function to read from SPI
-extern "C" void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-    if (htim == &htim3) {
-        inputBuffer[inputIndex] = ADXL_reading();
-        // self terminate on buffer fill
-        if (++inputIndex == ADXL_POINTS - 1) {
-            TIM3_stop();
-            inputIndex = 0;
-        }
+// internal ISR to handle reading from SPI. STM32 HAL is the devil
+extern "C" void TIM3_IRQHandler() {
+    inputBuffer[inputIndex] = ADXL_reading();
+    // self terminate on buffer fill
+    if (++inputIndex == ADXL_POINTS) {
+        TIM3_stop();
+        inputIndex = 0;
     }
 }
 
@@ -56,11 +53,9 @@ void ADXL_init() {
     accelerometer.setDataRate(ADXL345_3200HZ);
     //Measurement mode.
     accelerometer.setPowerControl(0x08);
-    // fill_ADXL_buffer();
+    fill_ADXL_buffer();
     // calculate offset, accumulate using float as start, implicit conversion to int16_t
-    // offset = std::accumulate(begin(inputBuffer), end(inputBuffer), 0.0f) / ADXL_POINTS;
-
-
+    offset = std::accumulate(begin(inputBuffer), end(inputBuffer), 0.0f) / ADXL_POINTS;
 }
 
 void fill_ADXL_buffer() {
@@ -69,18 +64,19 @@ void fill_ADXL_buffer() {
     ThisThread::sleep_for(ADXL_READ_TIME);
     // ensure it's finished
     while (inputIndex) {
-        // do nothing until interrupt routine self terminates
+        // stall
     };
 }
 
 void print_ADXL_buffer() {
     printf("Input buffer contents:\n");
-    for (int i = 0; i < ADXL_POINTS; ++i) {
+    for (int i = 0; i < (ADXL_POINTS > 10 ? 10 : ADXL_POINTS); ++i) {
         printf("%i, ", inputBuffer[i]);
     }
-    printf("\n");
+    printf("...\n");
 }
 
+static float32_t rfftBuffer[ADXL_POINTS];
 void perform_rfft() {
     static float32_t rfftOut[ADXL_POINTS / 2];
     arm_rfft_fast_instance_f32 rfft;
