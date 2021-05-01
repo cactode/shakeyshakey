@@ -1,10 +1,11 @@
 #include "waveread.h"
-#include <numeric>
 
 static uint32_t inputIndex{0};
 static int16_t inputBuffer[ADXL_POINTS];
 static int readings[]{0,0,0};
 static int16_t offset{0};
+static float32_t rfftBuffer[ADXL_POINTS];
+static float32_t rfftOut[ADXL_POINTS];
 
 ADXL345 accelerometer{PA_7, PA_6, PA_5, PB_6};
 
@@ -73,16 +74,37 @@ void print_ADXL_buffer() {
     for (int i = 0; i < (ADXL_POINTS > 10 ? 10 : ADXL_POINTS); ++i) {
         printf("%i, ", inputBuffer[i]);
     }
-    printf("...\n");
+    printf("\b\b...\n");
 }
 
-static float32_t rfftBuffer[ADXL_POINTS];
 void perform_rfft() {
-    static float32_t rfftOut[ADXL_POINTS / 2];
     arm_rfft_fast_instance_f32 rfft;
     arm_rfft_fast_init_f32(&rfft, ADXL_POINTS);
     for (int i = 0; i < ADXL_POINTS; ++i) {
-        rfftBuffer[i] = static_cast<float32_t>(inputBuffer[i]) / (0x1 << 16);
+        rfftBuffer[i] = static_cast<float32_t>(inputBuffer[i]);
     }
     arm_rfft_fast_f32(&rfft, rfftBuffer, rfftOut, 0);
+}
+
+void print_rfft_buffer() {
+    printf("rftt buffer contents:\n");
+    for (int i = 0; i < (ADXL_POINTS > 10 ? 10 : ADXL_POINTS); ++i) {
+        printf("%f, ", rfftBuffer[i]);
+    }
+    printf("\b\b...\n");
+}
+
+void print_rfft_out() {
+    printf("Output buffer contents:\n");
+    for (int i = 0; i < (ADXL_POINTS > 20 ? 10 : ADXL_POINTS / 2); ++i) {
+        printf("%f, ", rfftOut[i]);
+    }
+    printf("\b\b...\n");
+}
+
+void send_rfft_out() {
+    for (int i = 0; i < ADXL_POINTS; ++i) {
+        printf("%f ", rfftOut[i]);
+    }
+    printf("\n");
 }

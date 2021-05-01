@@ -19,5 +19,17 @@ void fill_ADXL_buffer();
 // convenience function to show what it printed
 void print_ADXL_buffer();
 
+// convenience function to see RFFT buffer?
+void print_rfft_buffer();
+
+// perform an rfft
+void perform_rfft();
+
+// convenience functino to see RFFT output?
+void print_rfft_out();
+
+// sends rfft in a more machine readable format
+void send_rfft_out();
+
 // convenience function to get ADXL reading
 int16_t ADXL_reading();

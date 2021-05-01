@@ -19,9 +19,10 @@ int main() {
     TIM2_start_with_frequency(100);
     printf("\nSuccessfully initialized DMA signal output!\n");
     while (true) {
-        printf("ADXL reading: %i\n", ADXL_reading());
-        fill_ADXL_buffer();
-        print_ADXL_buffer();
-        ThisThread::sleep_for(1000ms); 
+        if (getchar() == 'd') {
+            fill_ADXL_buffer();
+            perform_rfft();
+            send_rfft_out();
+        }
     }
 }
