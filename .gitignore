@@ -6,3 +6,5 @@ BUILD
 ADXL345
 FastPWM
 mbed-os
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*

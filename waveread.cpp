@@ -6,6 +6,7 @@ static int readings[]{0,0,0};
 static int16_t offset{0};
 static float32_t rfftBuffer[ADXL_POINTS];
 static float32_t rfftOut[ADXL_POINTS];
+static float32_t rfftMag[ADXL_POINTS / 2];
 
 ADXL345 accelerometer{PA_7, PA_6, PA_5, PB_6};
 
@@ -84,6 +85,7 @@ void perform_rfft() {
         rfftBuffer[i] = static_cast<float32_t>(inputBuffer[i]);
     }
     arm_rfft_fast_f32(&rfft, rfftBuffer, rfftOut, 0);
+    arm_cmplx_mag_f32(rfftOut, rfftMag, ADXL_POINTS / 2);
 }
 
 void print_rfft_buffer() {
@@ -105,6 +107,13 @@ void print_rfft_out() {
 void send_rfft_out() {
     for (int i = 0; i < ADXL_POINTS; ++i) {
         printf("%f ", rfftOut[i]);
+    }
+    printf("\n");
+}
+
+void send_rfft_mag() {
+    for (int i = 0; i < ADXL_POINTS / 2; ++i) {
+        printf("%f ", rfftMag[i]);
     }
     printf("\n");
 }

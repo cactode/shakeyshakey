@@ -31,5 +31,8 @@ void print_rfft_out();
 // sends rfft in a more machine readable format
 void send_rfft_out();
 
+// sends rfft complex magnitude
+void send_rfft_mag();
+
 // convenience function to get ADXL reading
 int16_t ADXL_reading();
