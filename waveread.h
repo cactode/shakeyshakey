@@ -28,11 +28,17 @@ void perform_rfft();
 // convenience functino to see RFFT output?
 void print_rfft_out();
 
+// sends adxl buffer for visualization
+void send_adxl_buffer();
+
 // sends rfft in a more machine readable format
 void send_rfft_out();
 
 // sends rfft complex magnitude
 void send_rfft_mag();
+
+// prints exec time of a adxl reading loop
+void print_exec_time();
 
 // convenience function to get ADXL reading
 int16_t ADXL_reading();

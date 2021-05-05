@@ -14,15 +14,24 @@ int main() {
     printf("Initialized sinLUT\n");
     ADXL_init();
     printf("Initialized ADXL!\n");
-    set_volume(20);
+    set_volume(25);
     printf("Set volume!\n");
-    TIM2_start_with_frequency(100);
     printf("\nSuccessfully initialized DMA signal output!\n");
     while (true) {
         if (getchar() == 'd') {
+            TIM2_start_with_frequency(100);
+            ThisThread::sleep_for(100ms);
             fill_ADXL_buffer();
+            send_adxl_buffer();
             perform_rfft();
-            send_rfft_out();
+            send_rfft_mag();
+            TIM2_stop();
+        } else {
+            ThisThread::sleep_for(100ms);
+            fill_ADXL_buffer();
+            send_adxl_buffer();
+            perform_rfft();
+            send_rfft_mag();
         }
     }
 }

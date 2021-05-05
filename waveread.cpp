@@ -7,8 +7,11 @@ static int16_t offset{0};
 static float32_t rfftBuffer[ADXL_POINTS];
 static float32_t rfftOut[ADXL_POINTS];
 static float32_t rfftMag[ADXL_POINTS / 2];
+static int32_t exec_time{0};
 
 ADXL345 accelerometer{PA_7, PA_6, PA_5, PB_6};
+
+Timer timer;
 
 void TIM3_start_with_ARR(uint16_t period) {
     TIM3->ARR     = period;                         // set new period
@@ -39,10 +42,11 @@ int16_t ADXL_reading() {
 // internal ISR to handle reading from SPI. STM32 HAL is the devil
 extern "C" void TIM3_IRQHandler() {
     inputBuffer[inputIndex] = ADXL_reading();
+    exec_time = timer.elapsed_time().count() - exec_time;
     // self terminate on buffer fill
     if (++inputIndex == ADXL_POINTS) {
         TIM3_stop();
-        inputIndex = 0;
+        inputIndex = 0;  
     }
 }
 
@@ -61,7 +65,10 @@ void ADXL_init() {
 }
 
 void fill_ADXL_buffer() {
+    timer.start();
     TIM3_start_with_frequency(ADXL_FREQ);
+    timer.stop();
+    timer.reset();
     // pause while it finishes up
     ThisThread::sleep_for(ADXL_READ_TIME);
     // ensure it's finished
@@ -104,6 +111,13 @@ void print_rfft_out() {
     printf("\b\b...\n");
 }
 
+void send_adxl_buffer() {
+    for (int i = 0; i < ADXL_POINTS; ++i) {
+        printf("%i ", inputBuffer[i]);
+    }
+    printf("\n");
+}
+
 void send_rfft_out() {
     for (int i = 0; i < ADXL_POINTS; ++i) {
         printf("%f ", rfftOut[i]);
@@ -116,4 +130,8 @@ void send_rfft_mag() {
         printf("%f ", rfftMag[i]);
     }
     printf("\n");
+}
+
+void print_exec_time() {
+    printf("Exec time: %i microseconds\n", exec_time);
 }
