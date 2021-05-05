@@ -14,7 +14,7 @@ int main() {
     printf("Initialized sinLUT\n");
     ADXL_init();
     printf("Initialized ADXL!\n");
-    set_volume(25);
+    set_volume(40);
     printf("Set volume!\n");
     printf("\nSuccessfully initialized DMA signal output!\n");
     while (true) {

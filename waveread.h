@@ -37,8 +37,5 @@ void send_rfft_out();
 // sends rfft complex magnitude
 void send_rfft_mag();
 
-// prints exec time of a adxl reading loop
-void print_exec_time();
-
 // convenience function to get ADXL reading
 int16_t ADXL_reading();
