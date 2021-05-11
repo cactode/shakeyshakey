@@ -2,7 +2,7 @@
 #include "mbed.h"
 #include "hw_init.h"
 #include "config.h"
-#include "ADXL345.h"
+#include "adxl.h"
 #include "arm_math.h"
 #include <chrono>
 #include <numeric>

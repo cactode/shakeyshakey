@@ -8,11 +8,12 @@ static float32_t rfftBuffer[ADXL_POINTS];
 static float32_t rfftOut[ADXL_POINTS];
 static float32_t rfftMag[ADXL_POINTS / 2];
 
-ADXL345 accelerometer{PA_7, PA_6, PA_5, PB_6};
-
+ADXL accelerometer{PA_7, PA_6, PA_5, PB_6};
 
 void TIM3_start_with_ARR(uint16_t period) {
     TIM3->ARR     = period;                         // set new period
+    TIM3->EGR    |= TIM_EGR_UG;                     // update period
+    TIM3->SR     &= ~TIM_SR_UIF;                    // ensure that we don't start out with an interrupt
     TIM3->DIER   |= TIM_IT_UPDATE;                  // enable interrupts
     TIM3->CR1    |= TIM_CR1_CEN;                    // enable timer
 }
@@ -21,6 +22,7 @@ void TIM3_stop() {
     TIM3->CR1    &= ~TIM_CR1_CEN;                   // disable operation
     TIM3->DIER   &= ~TIM_IT_UPDATE;                 // disable interrupts
     TIM3->ARR     = 0x0;                            // blanks out period
+    TIM3->EGR    |= TIM_EGR_UG;                     // update period, reset counter
 }
 
 // convenience function to make a specific frequency
@@ -33,29 +35,25 @@ void TIM3_start_with_frequency(float frequency) {
 }
 
 int16_t ADXL_reading() {
-    accelerometer.getOutput(readings);
-    return readings[1] - offset;
+    return accelerometer.read_y() - offset;
 }
 
 // internal ISR to handle reading from SPI. STM32 HAL is the devil
 extern "C" void TIM3_IRQHandler() {
-    inputBuffer[inputIndex] = ADXL_reading();
-    // self terminate on buffer fill
-    if (++inputIndex == ADXL_POINTS) {
-        TIM3_stop();
-        inputIndex = 0;  
+    if (TIM3->SR & TIM_SR_UIF) {
+        TIM3->SR &= ~TIM_SR_UIF;   // make sure we don't get stuck interrupting
+        inputBuffer[inputIndex] = ADXL_reading();
+        // self terminate on buffer fill
+        if (++inputIndex == ADXL_POINTS) {
+            TIM3_stop();
+            inputIndex = 0;  
+        }
     }
 }
 
 void ADXL_init() {
     //Go into standby mode to configure the device.
-    accelerometer.setPowerControl(0x00);
-    //Full resolution, +/-16g, 4mg/LSB.
-    accelerometer.setDataFormatControl(0x0B);
-    //3.2kHz data rate.
-    accelerometer.setDataRate(ADXL345_3200HZ);
-    //Measurement mode.
-    accelerometer.setPowerControl(0x08);
+    accelerometer.init();
     fill_ADXL_buffer();
     // calculate offset, accumulate using float as start, implicit conversion to int16_t
     offset = std::accumulate(begin(inputBuffer), end(inputBuffer), 0.0f) / ADXL_POINTS;

@@ -114,11 +114,12 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
     /* TIM3 clock enable */
     __HAL_RCC_TIM3_CLK_ENABLE();
 
+
     /* TIM3 interrupt Init */
     HAL_NVIC_SetPriority(TIM3_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(TIM3_IRQn);
   /* USER CODE BEGIN TIM3_MspInit 1 */
-
+    TIM3->CR1 |= TIM_CR1_URS | TIM_CR1_ARPE;  // stop erronous reloads
   /* USER CODE END TIM3_MspInit 1 */
   }
 }

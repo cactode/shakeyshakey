@@ -8,7 +8,7 @@ I2C amplifier{PB_9, PB_8};
 void sinLUT_init() {
     for (uint16_t i = 0; i < SIN_POINTS; ++i) {
         float sin = sinf(2 * 3.1415926 * (static_cast<float>(i) / SIN_POINTS));
-        sinLUT[i] = static_cast<uint32_t>( (sin / 2.1 + 0.5) * 4095); // scaled to be a 12-bit unsigned number
+        sinLUT[i] = static_cast<uint32_t>( (sin / 2.1f + 0.5f) * 4095); // scaled to be a 12-bit unsigned number
     }
     // link table to DMA
     HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, sinLUT, SIN_POINTS, DAC_ALIGN_12B_R);

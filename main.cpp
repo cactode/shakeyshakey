@@ -8,6 +8,8 @@
 #include "wavegen.h"
 #include "waveread.h"
 
+static float frequency = 100;
+
 int main() {
     HW_init();
     sinLUT_init();
@@ -19,13 +21,13 @@ int main() {
     printf("\nSuccessfully initialized DMA signal output!\n");
     while (true) {
         if (getchar() == 'd') {
-            TIM2_start_with_frequency(100);
+            TIM2_start_with_frequency(frequency);
             ThisThread::sleep_for(100ms);
             fill_ADXL_buffer();
+            TIM2_stop();
             send_adxl_buffer();
             perform_rfft();
             send_rfft_mag();
-            TIM2_stop();
         } else {
             ThisThread::sleep_for(100ms);
             fill_ADXL_buffer();
