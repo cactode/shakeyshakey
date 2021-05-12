@@ -12,28 +12,13 @@ static float frequency = 100;
 
 int main() {
     HW_init();
-    sinLUT_init();
-    printf("Initialized sinLUT\n");
-    ADXL_init();
-    printf("Initialized ADXL!\n");
-    set_volume(40);
-    printf("Set volume!\n");
-    printf("\nSuccessfully initialized DMA signal output!\n");
+    printf("Initialized all hardware!\n");
     while (true) {
-        if (getchar() == 'd') {
-            TIM2_start_with_frequency(frequency);
-            ThisThread::sleep_for(100ms);
-            fill_ADXL_buffer();
-            TIM2_stop();
-            send_adxl_buffer();
-            perform_rfft();
-            send_rfft_mag();
-        } else {
-            ThisThread::sleep_for(100ms);
-            fill_ADXL_buffer();
-            send_adxl_buffer();
-            perform_rfft();
-            send_rfft_mag();
-        }
+        printf("Frequency set to %f\n", frequency);
+        start_wavegen(frequency, 20);
+        ThisThread::sleep_for(1000ms);
+        stop_wavegen();
+        ThisThread::sleep_for(1ms);
+        frequency += 50;
     }
 }

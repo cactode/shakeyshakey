@@ -1,6 +1,5 @@
 #pragma once
 #include "mbed.h"
-#include "hw_init.h"
 #include "config.h"
 #include "adxl.h"
 #include "arm_math.h"
@@ -13,11 +12,17 @@ constexpr std::chrono::milliseconds ADXL_READ_TIME{static_cast<int>(1000 * ADXL_
 // initializes ADXL
 void ADXL_init();
 
+// sets range of accelerometer
+void set_range(uint8_t range);
+
+// find gravitational offset
+void find_accel_offset();
+
 // blocking function that collects data from ADXL
-void fill_ADXL_buffer();
+void fill_accel_buffer();
 
 // convenience function to show what it printed
-void print_ADXL_buffer();
+void print_accel_buffer();
 
 // convenience function to see RFFT buffer?
 void print_rfft_buffer();
@@ -28,13 +33,13 @@ void perform_rfft();
 // convenience functino to see RFFT output?
 void print_rfft_out();
 
-// sends adxl buffer for visualization
+// sends adxl buffer in a more machine readable format
 void send_adxl_buffer();
 
 // sends rfft in a more machine readable format
 void send_rfft_out();
 
-// sends rfft complex magnitude
+// sends rfft complex magnitude in a more machine readable format
 void send_rfft_mag();
 
 // convenience function to get ADXL reading

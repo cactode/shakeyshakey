@@ -52,14 +52,21 @@ extern "C" void TIM3_IRQHandler() {
 }
 
 void ADXL_init() {
-    //Go into standby mode to configure the device.
     accelerometer.init();
-    fill_ADXL_buffer();
+}
+
+void set_range(ADXL_RANGE range) {
+    accelerometer.range(range);
+}
+
+void find_offset_value() {
+    offset = 0;
+    fill_accel_buffer();
     // calculate offset, accumulate using float as start, implicit conversion to int16_t
     offset = std::accumulate(begin(inputBuffer), end(inputBuffer), 0.0f) / ADXL_POINTS;
 }
 
-void fill_ADXL_buffer() {
+void fill_accel_buffer() {
     TIM3_start_with_frequency(ADXL_FREQ);
     // pause while it finishes up
     ThisThread::sleep_for(ADXL_READ_TIME);
