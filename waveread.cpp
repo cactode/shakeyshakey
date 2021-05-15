@@ -59,7 +59,7 @@ void set_range(ADXL_RANGE range) {
     accelerometer.range(range);
 }
 
-void find_offset_value() {
+void find_accel_offset() {
     offset = 0;
     fill_accel_buffer();
     // calculate offset, accumulate using float as start, implicit conversion to int16_t
@@ -93,6 +93,11 @@ void perform_rfft() {
     arm_rfft_fast_f32(&rfft, rfftBuffer, rfftOut, 0);
     arm_cmplx_mag_f32(rfftOut, rfftMag, ADXL_POINTS / 2);
 }
+
+float get_rfft_at_frequency(float frequency) {
+    return rfftMag[static_cast<int>(frequency / FREQ_BIN_WIDTH)];
+}
+
 
 void print_rfft_buffer() {
     printf("rftt buffer contents:\n");

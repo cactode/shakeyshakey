@@ -9,6 +9,8 @@
 // time taken to fill the ADXL buffer
 constexpr std::chrono::milliseconds ADXL_READ_TIME{static_cast<int>(1000 * ADXL_POINTS / ADXL_FREQ)};
 
+constexpr float FREQ_BIN_WIDTH{ADXL_FREQ / (2 * ADXL_POINTS)};
+
 // initializes ADXL
 void ADXL_init();
 
@@ -29,6 +31,9 @@ void print_rfft_buffer();
 
 // perform an rfft
 void perform_rfft();
+
+// get a specific rfft value
+float get_rfft_at_frequency(float frequency);
 
 // convenience functino to see RFFT output?
 void print_rfft_out();

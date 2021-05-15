@@ -8,17 +8,24 @@
 #include "wavegen.h"
 #include "waveread.h"
 
-static float frequency = 100;
 
 int main() {
     HW_init();
-    printf("Initialized all hardware!\n");
+    find_accel_offset();
     while (true) {
-        printf("Frequency set to %f\n", frequency);
-        start_wavegen(frequency, 20);
-        ThisThread::sleep_for(1000ms);
-        stop_wavegen();
-        ThisThread::sleep_for(1ms);
-        frequency += 50;
-    }
+        float frequency = 100;
+        getchar();
+        while (frequency < 1000) {
+            start_wavegen(frequency, 30);
+            ThisThread::sleep_for(50ms);
+            fill_accel_buffer();
+            perform_rfft();
+            stop_wavegen();
+            printf("%f %f ", frequency, get_rfft_at_frequency(frequency));
+            ThisThread::sleep_for(1ms);
+            frequency += 10;
+        }
+        printf("\n");
+    ThisThread::sleep_for(1000ms);
+    };
 }
