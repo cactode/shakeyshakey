@@ -23,3 +23,4 @@ void set_volume(uint8_t volume);
 
 // initializes amplifier
 void MAX_init();
+

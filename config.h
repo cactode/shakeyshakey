@@ -8,7 +8,7 @@ constexpr PinName OUTPUT_PIN{PA_4};
 constexpr uint32_t SIN_POINTS{256};
 
 // points to collect from adxl
-constexpr uint16_t ADXL_POINTS{1024};
+constexpr uint16_t ADXL_POINTS{256};
 
 // frequency to acquire samples at
 constexpr float ADXL_FREQ{3000};

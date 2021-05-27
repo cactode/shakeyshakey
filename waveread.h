@@ -35,6 +35,9 @@ void perform_rfft();
 // get a specific rfft value
 float get_rfft_at_frequency(float frequency);
 
+// get peak adxl reading?
+float get_peak_reading();
+
 // convenience functino to see RFFT output?
 void print_rfft_out();
 

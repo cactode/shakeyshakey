@@ -95,9 +95,17 @@ void perform_rfft() {
 }
 
 float get_rfft_at_frequency(float frequency) {
-    return rfftMag[static_cast<int>(frequency / FREQ_BIN_WIDTH)];
+    return rfftMag[static_cast<int>(frequency / FREQ_BIN_WIDTH + 0.5)];
 }
 
+float get_peak_reading() {
+    float32_t result;
+    for (int i = 0; i < ADXL_POINTS; ++i) {
+        rfftBuffer[i] = static_cast<float32_t>(inputBuffer[i]);
+    }
+    arm_max_no_idx_f32(rfftBuffer, ADXL_POINTS, &result);
+    return result;
+}
 
 void print_rfft_buffer() {
     printf("rftt buffer contents:\n");
